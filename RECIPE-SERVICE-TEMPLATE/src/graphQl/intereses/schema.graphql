@@ -1,0 +1,23 @@
+type message{
+    success:Boolean!
+    message:String!
+}
+
+input timeSpentInput{
+    initial:Int!
+    end:Int!
+}
+
+input interestsInput{
+    ability:String!
+    diet:String!
+    intolerances:String!
+    timeSpent:timeSpentInput!
+}
+type Query{
+    _empty:Boolean
+}
+type Mutation{
+    addInterests(nickname:String!,interests:interestsInput!):message!
+    updateInterests(nickname:String!,interests:interestsInput!):message!
+}

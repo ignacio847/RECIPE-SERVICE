@@ -1,0 +1,33 @@
+type recipeList{
+    recipeId: String!
+    nickName:String
+    name: String!
+    image:String!
+    description: String!
+    ingredients: [ingredient]!
+    steps: [step]!
+    typeOfDish: String!
+    difficulty: String!
+    typeOfDiet: String!
+    numberOfStart: Int
+    portions: Float!
+    time: Int!
+}
+
+type showRecipeListDetails {
+    success:Boolean!
+    recipe:recipeList!
+}
+
+union showRecipeListDetailsMessage = showRecipeListDetails | recipeErrorMessage
+
+type Mutation{
+    addRecipeToList(recipe:recipeInput!):recipeErrorMessage!
+    deleteRecipeFromList(id:String!):recipeErrorMessage!
+}
+
+type Query{
+    getRecipeFromList:getRecipesByUser!
+    showRecipeDetailsFromList(id:String!):showRecipeListDetailsMessage!
+    existRecipeInList(id:String!):recipeErrorMessage!
+}

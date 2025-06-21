@@ -1,0 +1,172 @@
+type recipeErrorMessage{
+    success:Boolean!
+    message:String!
+}
+
+type preLoadingExistMessage{
+    success:Boolean!
+    options:[String]
+    token:String!
+}
+
+union preLoadingMessage = preLoadingExistMessage | recipeErrorMessage
+
+type recipeGot{
+    _id:String!
+    nickName:String
+    name:String!
+    image:String!
+    description:String
+    numberOfStart:Float!
+
+}
+
+type getRecipesByUser{
+    success:Boolean!
+    recipes:[recipeGot]!
+}
+
+union getRecipesByUserMessage = getRecipesByUser | recipeErrorMessage
+
+
+type ingredient {
+  name: String!
+  quantity: Float!
+  unit: String!
+}
+
+type step {
+  description: String!
+}
+
+type recipe{
+    _id: String!
+    nickName:String
+    name: String!
+    image:String!
+    description: String!
+    ingredients: [ingredient]!
+    steps: [step]!
+    typeOfDish: String!
+    difficulty: String!
+    typeOfDiet: String!
+    numberOfStart: Int
+    portions: Float!
+    time: Int!
+    approved:Boolean
+}
+
+type showDetails{
+  success:Boolean!
+  recipe:recipe!
+}
+
+union recipeDetailsMessage = showDetails | recipeErrorMessage
+
+
+type recipeList{
+    success:Boolean!
+    recipes:[recipe]
+    message:String
+} 
+
+union recipeNotApprovedMessage = recipeList | recipeErrorMessage
+
+type searchRecipe {
+    success:Boolean!
+    recipes:[recipeGot]
+    message:String
+}
+
+union searchRecipeMessage = searchRecipe | recipeErrorMessage
+
+input UpdateRecipeInput {
+  _id: String!
+  name: String!
+  image:String!
+  description: String!
+  ingredients: [ingredientItemInput]!
+  steps: [stepInput]!
+  typeOfDish: String!
+  difficulty: String!
+  typeOfDiet: String!
+  portions: Float!
+  time: Int
+}
+
+
+input ingredientItemInput {
+  name: String!
+  quantity: Float!
+  unit: String!
+}
+
+input stepInput {
+  description: String!
+}
+
+input recipeInput {
+  _id:String
+  name:String!
+  nickName:String!
+  image:String!
+  description: String!
+  ingredients: [ingredientItemInput]!
+  steps: [stepInput]!
+  typeOfDish: String!
+  difficulty: String!
+  typeOfDiet: String!
+  portions: Float!
+  time: Int
+}
+
+type portions{
+  success:Boolean!
+  portion:Float
+  ingredients:[ingredient]!
+}
+
+union portionsMessage = portions | recipeErrorMessage
+
+type changeRecipe{
+  name:String!
+  nickName:String!
+  image:String
+  description: String
+  ingredients: [ingredient]
+  steps: [step]
+  typeOfDish: String
+  difficulty: String
+  typeOfDiet: String
+  portions: Float
+  time: Int
+}
+
+type recipeExist{
+  success:Boolean!
+  recipe:changeRecipe!
+  message:String! 
+}
+
+union existRecipeByNameMessage = recipeExist | recipeErrorMessage
+
+type Query{
+    getRecipesByUser: getRecipesByUserMessage!
+    showRecipeDetails(id:String!):recipeDetailsMessage!
+    showRecipeNotApproved:recipeNotApprovedMessage!
+    searchWithIngredients(orderBy:String!,direction:String,searchText:String!):searchRecipeMessage!
+    searchWithOutIngredients(orderBy:String!,direction:String,searchText:String!):searchRecipeMessage!
+    searchByNickName(orderBy:String!,direction:String,searchText:String!):searchRecipeMessage!
+    searchByType(orderBy:String!,direction:String,searchText:String!):searchRecipeMessage!
+    searchByName(orderBy:String!,direction:String,searchText:String!):searchRecipeMessage!
+    calculatePortions(id:String!, portion:Float!):portionsMessage!
+    calculatePortionsByIngredient(id:String!, portion:Int!, ingredientName:String!):portionsMessage!
+    existRecipeByName(name:String!):existRecipeByNameMessage!
+}
+
+type Mutation{
+    loadRecipe(recipe:recipeInput!, option:String!):recipeErrorMessage!
+    UpdateRecipe(recipe:UpdateRecipeInput!):recipeErrorMessage!
+    deleteRecipe(id:String!):recipeErrorMessage!
+    approveRecipes(id:String!,accept:Boolean!):recipeErrorMessage!
+}

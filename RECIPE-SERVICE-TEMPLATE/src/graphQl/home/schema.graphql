@@ -1,0 +1,36 @@
+type showRecipe {
+  _id: String!
+  image:String!
+}
+
+type showLastThreeRecipesCard {
+  success: Boolean!
+  title:String
+  recipes:[showRecipe]!
+  message:String
+}
+
+type showRecipeCard {
+  success:Boolean!
+  title:String
+  recipe:showRecipe
+  message:String
+}
+
+type homeMessageSuccess {
+  lastThreeRecipes: showLastThreeRecipesCard!
+  ability:showRecipeCard
+  diet:showRecipeCard
+  timeSpent:showRecipeCard
+}
+
+type errorHomeMessage{
+    success:Boolean!
+    message:String!
+}
+
+union homeMessage = homeMessageSuccess | errorHomeMessage
+
+type Query {
+  home:homeMessage!
+}

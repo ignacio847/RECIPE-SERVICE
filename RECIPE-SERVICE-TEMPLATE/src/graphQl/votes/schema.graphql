@@ -1,0 +1,34 @@
+type voteErrorMessage{
+    success:Boolean!
+    message:String!
+}
+
+type vote{
+    _id:String
+    nickName:String!
+    stars:Int!
+    description:String!
+    date:String!
+}
+
+type listVote{
+    success:Boolean!
+    userHasVoted:Boolean!
+    votes:[vote]!
+}
+
+union votesNotApprovedMessage = listVote | voteErrorMessage
+
+union showVotesMessage = listVote | voteErrorMessage
+
+type Query{
+    showVoteNotApproved:votesNotApprovedMessage
+    showVotes(id:String!):showVotesMessage
+}
+
+type Mutation{
+    makeAVote(id:String!,stars:Int,description:String!): voteErrorMessage!
+    approveVotes(id:String!,accept:Boolean!): voteErrorMessage!
+    updateVote(id:String!,stars:Int,description:String!):voteErrorMessage!
+    deleteVote(id:String!):voteErrorMessage!
+}

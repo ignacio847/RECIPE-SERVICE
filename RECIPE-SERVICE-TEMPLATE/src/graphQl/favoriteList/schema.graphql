@@ -1,0 +1,10 @@
+type Query{
+    existRecipeInFavorite(id:String!):recipeErrorMessage!
+    getRecipeFromFavorites:getRecipesByUserMessage!
+
+}
+
+type Mutation{
+    addRecipeToFavorite(id:String!):recipeErrorMessage!
+    deletefromFavorite(id:String!):recipeErrorMessage!
+}
