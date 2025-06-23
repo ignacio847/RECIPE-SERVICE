@@ -70,6 +70,7 @@ const showRecipeDetails = async (_id, nickName) => {
             if(approved.approved){
                 const response = await Recipe.findOne({_id})
                 .select("_id nickName name image description ingredients steps typeOfDish difficulty typeOfDiet numberOfStart portions time");
+                console.log(response)
                 return response ? {success: true, message:response}:{success:false, message:"el detalle de la receta no pudo ser encontro."};
             }else{
                 return {success:false, message:"el usuario no tiene permisos para ver la receta."}
@@ -349,7 +350,8 @@ const showVotes = async (_id, nickName) => {
 
 const getRecipeFromList = async (nickName) => {
     try{
-        const response = await RecipeList.find({nickName}).select("recipeId nickName name image description");
+        const response = await RecipeList.find({nickName}).select("recipeId nickName name image description numberOfStart");
+        console.log("porcion" ,response.portions)
         if (!response || response.length === 0) {
             return { success: false, message: "lista vacia." };
           }
@@ -362,7 +364,8 @@ const getRecipeFromList = async (nickName) => {
 const showRecipeDetailsFromList = async (recipeId, nickName) => {
     try{
         const response = await RecipeList.findOne({recipeId,nickName})
-        .select("recipeId nickName name image description ingredients steps typeOfDish difficulty typeOfDiet numberOfStart portions time");
+        .select("recipeId name image description ingredients steps typeOfDish difficulty typeOfDiet numberOfStart portions time ");
+        console.log(response)
         return response ? {success:true, message:response}:{success:false, message:"la receta no pudo ser encontrada."}
     }catch(error){
         return {success:false, message:error.message};
@@ -626,11 +629,10 @@ const updateInterests = async (nickName, interests) =>{
 const showLastThreeRecipes = async () => {
   try {
     const response = await Recipe.find().select("_id image").limit(3);
-
+    console.log(response)
     return response.length > 0
       ? { success: true, title: "Últimas recetas compartidas.", recipes: response }
       : { success: false, message: "No se encontraron recetas." };
-
   } catch (error) {
     return { success: false, message: error.message };
   }

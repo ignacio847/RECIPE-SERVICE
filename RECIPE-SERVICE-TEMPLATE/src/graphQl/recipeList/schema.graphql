@@ -1,33 +1,25 @@
-type recipeList{
-    recipeId: String!
-    nickName:String
-    name: String!
-    image:String!
-    description: String!
-    ingredients: [ingredient]!
-    steps: [step]!
-    typeOfDish: String!
-    difficulty: String!
-    typeOfDiet: String!
-    numberOfStart: Int
-    portions: Float!
-    time: Int!
+input recipeListInput {
+  recipeId:String!
+  name:String!
+  image:String!
+  description: String!
+  ingredients: [ingredientItemInput]!
+  steps: [stepInput]!
+  typeOfDish: String!
+  difficulty: String!
+  typeOfDiet: String!
+  portions: Float!
+  time: Int!
+  numberOfStart:Float!
 }
-
-type showRecipeListDetails {
-    success:Boolean!
-    recipe:recipeList!
-}
-
-union showRecipeListDetailsMessage = showRecipeListDetails | recipeErrorMessage
 
 type Mutation{
-    addRecipeToList(recipe:recipeInput!):recipeErrorMessage!
+    addRecipeToList(recipe:recipeListInput!):recipeErrorMessage!
     deleteRecipeFromList(id:String!):recipeErrorMessage!
 }
 
 type Query{
-    getRecipeFromList:getRecipesByUser!
-    showRecipeDetailsFromList(id:String!):showRecipeListDetailsMessage!
+    getRecipeFromList:getRecipesByUserMessage!
+    showRecipeDetailsFromList(id:String!):recipeDetailsMessage!
     existRecipeInList(id:String!):recipeErrorMessage!
 }

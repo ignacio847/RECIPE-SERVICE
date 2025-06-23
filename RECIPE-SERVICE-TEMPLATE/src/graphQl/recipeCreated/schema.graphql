@@ -13,6 +13,7 @@ union preLoadingMessage = preLoadingExistMessage | recipeErrorMessage
 
 type recipeGot{
     _id:String!
+    recipeId:String
     nickName:String
     name:String!
     image:String!
@@ -41,6 +42,7 @@ type step {
 
 type recipe{
     _id: String!
+    recipeId:String
     nickName:String
     name: String!
     image:String!
@@ -117,7 +119,7 @@ input recipeInput {
   difficulty: String!
   typeOfDiet: String!
   portions: Float!
-  time: Int
+  time: Int!
 }
 
 type portions{

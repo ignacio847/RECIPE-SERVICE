@@ -7,6 +7,7 @@ const resolvers = {
             try{
               const {informationToken} = context;
               const response = await service.getRecipeFromList(informationToken.nickName);
+              console.log("archivado" ,response)
               return response.success ? {
                 __typename:"getRecipesByUser",
                 success:response.success,
@@ -29,7 +30,7 @@ const resolvers = {
                 const {informationToken} = context;
                 const response = await service.showRecipeDetailsFromList(id, informationToken.nickName);
                 return response.success ?{
-                    __typename:"showRecipeListDetails",
+                    __typename:"showDetails",
                     success:response.success,
                     recipe: response.message
                 }:{
@@ -61,9 +62,10 @@ const resolvers = {
             const {informationToken} = context;
             const newRecipe = {
                 nickName:informationToken.nickName,
-                recipeId:recipe._id,
+                recipeId:recipe.recipeId,
                 portions:recipe.portions,
                 name:recipe.name,
+                image:recipe.image,
                 description:recipe.description,
                 ingredients:recipe.ingredients,
                 steps:recipe.steps,
@@ -90,7 +92,7 @@ const resolvers = {
             }
         },
     },
-    showRecipeListDetailsMessage:{
+    recipeDetailsMessage:{
         __resolveType(obj){
             return obj.__typename;
         }
