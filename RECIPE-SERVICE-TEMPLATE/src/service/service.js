@@ -751,7 +751,7 @@ const showForAbility = async (nickName) => {
 
 const existRecipeByName = async (nickName,name) =>{
   try{
-    const response = await Recipe.findOne({nickName:nickName,name:name}).select("name nickName image description ingredients steps typeOfDish difficulty typeOfDiet portions time");
+    const response = await Recipe.findOne({nickName:nickName,name:name}).select("_id name nickName image description ingredients steps typeOfDish difficulty typeOfDiet portions time");
     console.log(response, name, nickName)
     return response ? {success:true,recipe:response,message:"existe la receta"}:{success:false,recipe:{name,nickName},message:"la receta no existe"}
   }catch(error){

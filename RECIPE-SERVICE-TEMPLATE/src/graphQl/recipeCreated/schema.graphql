@@ -131,6 +131,7 @@ type portions{
 union portionsMessage = portions | recipeErrorMessage
 
 type changeRecipe{
+  _id:String
   name:String!
   nickName:String!
   image:String
