@@ -164,6 +164,7 @@ type Query{
     calculatePortions(id:String!, portion:Float!):portionsMessage!
     calculatePortionsByIngredient(id:String!, portion:Int!, ingredientName:String!):portionsMessage!
     existRecipeByName(name:String!):existRecipeByNameMessage!
+    existNameForUpdate(id:String,name:String!):recipeErrorMessage!
 }
 
 type Mutation{

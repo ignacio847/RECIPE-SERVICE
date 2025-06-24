@@ -260,6 +260,14 @@ const resolvers = {
         return {__typename:"recipeErrorMessage",success:false,message:error.message}
       }
     },
+    existNameForUpdate: async (_,{id,name},context) =>{
+      try{
+        const {informationToken} = context;
+        return await service.existNameForUpdate(id,name,informationToken.nickName);
+      }catch(error){
+        return {success:false,message:error.message}
+      }
+    },
   },    
   Mutation:{
       loadRecipe: async (_, { recipe,option }) => {

@@ -758,6 +758,15 @@ const existRecipeByName = async (nickName,name) =>{
     return {success:false,message:error.message}
   }
 };
+
+const existNameForUpdate = async (_id,name,nickName) =>{
+  try{
+    const response = await Recipe.findOne({nickName:nickName,name:name,_id:_id})
+    return response ? {success:false,message:"es la misma receta"}:{success:false,message:"la receta ya existe."};
+  }catch(error){
+    return {success:false,message:error.message}
+  }
+};
                                                                              
 module.exports = { 
     updateLoadRecipe,
@@ -797,5 +806,6 @@ module.exports = {
     showForTimeSpent,
     showForDiet,
     showForAbility,
-    existRecipeByName
+    existRecipeByName,
+    existNameForUpdate
 };
