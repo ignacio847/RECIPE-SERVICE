@@ -68,7 +68,7 @@ union recipeDetailsMessage = showDetails | recipeErrorMessage
 
 type recipeList{
     success:Boolean!
-    recipes:[recipe]
+    recipes:[recipeGot]
     message:String
 } 
 
