@@ -628,7 +628,7 @@ const updateInterests = async (nickName, interests) =>{
 
 const showLastThreeRecipes = async () => {
   try {
-    const response = await Recipe.find().select("_id image").limit(3);
+    const response = await Recipe.find({approved:true}).select("_id image").limit(3);
     console.log(response)
     return response.length > 0
       ? { success: true, title: "Últimas recetas compartidas.", recipes: response }
@@ -652,13 +652,13 @@ const showForTimeSpent = async (nickName) => {
       end = interests.timeSpent.end;
     }
 
-    let recipe = await Recipe.findOne({
+    let recipe = await Recipe.findOne({approved:true,
       ingredients: { $not: { $elemMatch: { name: intolerances } } },
       time: { $gte: initial, $lte: end }
     }).select("_id image time");
 
     if (!recipe) {
-      recipe = await Recipe.findOne().sort({ _id: -1 }).select("_id image time");
+      recipe = await Recipe.findOne({approved:true}).sort({ _id: -1 }).select("_id image time");
     }
 
     if (!recipe) {
@@ -693,13 +693,13 @@ const showForDiet = async (nickName) => {
       diet = interests.diet;
     }
 
-    let recipe = await Recipe.findOne({
+    let recipe = await Recipe.findOne({approved:true,
       ingredients: { $not: { $elemMatch: { name: intolerances } } },
       ...(diet && { diet })
     }).select("_id image typeOfDiet");
 
     if (!recipe) {
-      recipe = await Recipe.findOne().sort({ _id: -1 }).select("_id image typeOfDiet");
+      recipe = await Recipe.findOne({approved:true}).sort({ _id: -1 }).select("_id image typeOfDiet");
     }
 
     if (!recipe) {
@@ -727,13 +727,13 @@ const showForAbility = async (nickName) => {
       ability = interests.ability;
     }
 
-    let recipe = await Recipe.findOne({
+    let recipe = await Recipe.findOne({approved:true,
       ingredients: { $not: { $elemMatch: { name: intolerances } } },
       ...(ability && { difficulty })
     }).select("_id image difficulty");
 
     if (!recipe) {
-      recipe = await Recipe.findOne().sort({ _id: -1 }).select("_id image difficulty");
+      recipe = await Recipe.findOne({approved:true}).sort({ _id: -1 }).select("_id image difficulty");
     }
 
     if (!recipe) {
