@@ -13,7 +13,7 @@ type vote{
 
 type listVote{
     success:Boolean!
-    userHasVoted:Boolean!
+    userHasVoted:Boolean
     votes:[vote]!
 }
 
