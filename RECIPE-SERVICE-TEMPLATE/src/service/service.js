@@ -297,7 +297,7 @@ const deleteVote = async (_id) => {
 
 const showRecipeNotApproved = async () => {
     try{
-        const response = await Recipe.find({approved:false}).select("_id nickName name image numberOfStart");
+        const response = await Recipe.find({approved:false}).select("_id name nickName image description ingredients steps typeOfDish difficulty typeOfDiet numberOfStart portions time");
         return response.length > 0 ? {success:true, message:response}:{success:false, message:"lista vacia."};
     }catch(error){
         return {success:false, message:error.message};
