@@ -23,3 +23,45 @@ type Query{
     showRecipeDetailsFromList(id:String!):recipeDetailsMessage!
     existRecipeInList(id:String!):recipeErrorMessage!
 }
+
+type Recipe {
+  _id: ID!
+  nickName: String!
+  name: String!
+  image: String!
+  description: String!
+}
+
+type FilteredRecipesResponse {
+  success: Boolean!
+  recipes: [Recipe]
+  message: String
+}
+
+enum FilterType {
+  NAME
+  USERNAME
+  TYPE
+  WITH_INGREDIENTS
+  WITHOUT_INGREDIENTS
+}
+
+enum OrderByField {
+  name
+  date
+  nickname
+}
+
+enum OrderDirection {
+  asc
+  desc
+}
+
+type Query {
+  filterRecipes(
+    filterType: FilterType!
+    searchText: String!
+    orderBy: OrderByField
+    direction: OrderDirection
+  ): FilteredRecipesResponse!
+}
