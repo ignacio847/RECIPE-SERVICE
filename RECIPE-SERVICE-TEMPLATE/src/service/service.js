@@ -9,7 +9,7 @@ const updateLoadRecipe = async (recipe) =>{
     try{
     const response = await Recipe.findOneAndUpdate(
         { nickName: recipe.nickName, name: recipe.name }, 
-        { $set: recipe },
+        { $set:{ ...recipe,approved:false }},
         { new: true, upsert: false } 
     );
 
@@ -24,6 +24,7 @@ const updateLoadRecipe = async (recipe) =>{
 
 const replaceRecipe = async (recipe) =>{
     try{
+      recipe.approved = false;
         const response = await Recipe.findOneAndReplace(
             { nickName: recipe.nickName, name: recipe.name }, 
             recipe, 
