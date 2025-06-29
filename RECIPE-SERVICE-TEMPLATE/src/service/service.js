@@ -629,7 +629,10 @@ const updateInterests = async (nickName, interests) =>{
 
 const showLastThreeRecipes = async () => {
   try {
-    const response = await Recipe.find({approved:true}).select("_id image").limit(3);
+    const response = await Recipe.find({ approved: true })
+    .sort({ date: -1 }) 
+    .select("_id image")
+    .limit(3);
     console.log(response)
     return response.length > 0
       ? { success: true, title: "Últimas recetas compartidas.", recipes: response }
