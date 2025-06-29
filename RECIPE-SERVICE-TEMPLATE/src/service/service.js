@@ -395,7 +395,7 @@ const deleteRecipeFromList = async (recipeId) =>{
     }
 };
 
-const searchRecipesWithIngredients = async (orderBy,direction ,searchText) => {
+const searchRecipesWithIngredients = async (searchText) => {
     try {
       const ingredients = search.extractIngredients(searchText);
   
@@ -410,12 +410,10 @@ const searchRecipesWithIngredients = async (orderBy,direction ,searchText) => {
             }))
           }
         : {};
-  
-        const sort = search.getSortObject(orderBy, direction);
 
         const recipes = await Recipe.find(filter)
           .select("_id nickName name image description")
-          .sort(sort);
+          .sort({ "name": -1 }) 
   
       return recipes.length > 0
         ? { success: true, message: recipes }
@@ -426,7 +424,7 @@ const searchRecipesWithIngredients = async (orderBy,direction ,searchText) => {
     }
 };
   
-const searchRecipesWithoutIngredients = async (orderBy, direction, searchText) => {
+const searchRecipesWithoutIngredients = async (searchText) => {
     try {
       const ingredients = search.extractIngredients(searchText);
   
@@ -440,9 +438,7 @@ const searchRecipesWithoutIngredients = async (orderBy, direction, searchText) =
           }
         : {};
   
-      const sort = search.getSortObject(orderBy, direction);
-  
-      const recipe = await Recipe.find(filter).select("_id nickName name image description").sort(sort);
+      const recipe = await Recipe.find(filter).select("_id nickName name image description").sort({ "name": -1 }) ;
   
       return recipe.length > 0
         ? { success: true, message: recipe }
@@ -452,12 +448,11 @@ const searchRecipesWithoutIngredients = async (orderBy, direction, searchText) =
     }
   };
 
-const searchRecipeByNickName = async (orderBy, direction, searchText) =>{
+const searchRecipeByNickName = async (searchText) =>{
     try{
-        const sort = search.getSortObject(orderBy, direction);
         const recipes = await Recipe.find({
             nickName: { $regex: new RegExp(`^${searchText}$`, 'i') }
-          }).select("_id name image description").sort(sort);
+          }).select("_id name image description").sort({ "name": -1 }) ;
 
           return recipes.length > 0
           ? {success:true, message:recipes}
@@ -468,12 +463,11 @@ const searchRecipeByNickName = async (orderBy, direction, searchText) =>{
     }
 };
   
-const searchByType = async (orderBy, direction, searchText) => {
+const searchByType = async (searchText) => {
     try{
-        const sort = search.getSortObject(orderBy, direction);
         const recipes = await Recipe.find({
             typeOfDish: { $regex: new RegExp(`^${searchText}$`, 'i') }
-          }).select("_id nickName name image description").sort(sort);
+          }).select("_id nickName name image description").sort({ "name": -1 }) ;
 
           return recipes.length > 0
           ? {success:true, message:recipes}
@@ -484,10 +478,8 @@ const searchByType = async (orderBy, direction, searchText) => {
 
 };
 
-const searchByName = async (orderBy, direction, searchText) => {
+const searchByName = async (searchText) => {
     try {
-      const sort = search.getSortObject(orderBy, direction);
-  
       const recipes = await Recipe.aggregate([
         {
           $match: {
@@ -504,7 +496,7 @@ const searchByName = async (orderBy, direction, searchText) => {
           $replaceRoot: { newRoot: "$doc" } 
         },
         {
-          $sort: sort
+          $sort: "name"
         },
         {
           $project: {

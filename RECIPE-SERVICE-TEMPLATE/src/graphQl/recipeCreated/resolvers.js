@@ -59,11 +59,9 @@ const resolvers = {
           return {__typename:"recipeErrorMessage",success:false, message:error.message}
         }
     },
-    searchWithIngredients: async (_,{orderBy,direction,searchText}) => {
-    try{
-        if (!["name", "date", "nickName"].includes(orderBy)) 
-        return {__typename:"errorMessage",success:false, message:"el filtro orden es ivvalido."};
-        const response = await service.searchRecipesWithIngredients(orderBy,direction,searchText);
+    searchWithIngredients: async (_,{searchText}) => {
+    try{ 
+        const response = await service.searchRecipesWithIngredients(searchText);
         return response.success ? {
         __typename:"searchRecipe",
         success:response.success,
@@ -79,13 +77,11 @@ const resolvers = {
         success:false,
         message:error.message
         };
-    }
+      }
     },
-    searchWithOutIngredients: async (_,{orderBy,direction,searchText}) => {
+    searchWithOutIngredients: async (_,{searchText}) => {
     try{
-        if (!["name", "date", "nickName"].includes(orderBy)) 
-        return {__typename:"errorMessage",success:false, message:"el filtro orden es ivvalido."};
-        const response = await service.searchRecipesWithoutIngredients(orderBy, direction,searchText);
+        const response = await service.searchRecipesWithoutIngredients(searchText);
         return response.success ? {
         __typename:"searchRecipe",
         success:response.success,
@@ -103,11 +99,9 @@ const resolvers = {
         };
     }
     },
-    searchByNickName: async (_,{orderBy,direction,searchText}) =>{
+    searchByNickName: async (_,{searchText}) =>{
     try{
-        if (!["name", "date", "nickName"].includes(orderBy)) 
-        return {__typename:"errorMessage",success:false, message:"el filtro orden es ivvalido."};
-        const response = await service.searchRecipeByNickName(orderBy,direction,searchText);
+        const response = await service.searchRecipeByNickName(searchText);
         return response.success ? {
         __typename:"searchRecipe",
         success:response.success,
@@ -125,11 +119,9 @@ const resolvers = {
         };
     }
     },
-    searchByType: async (_,{orderBy,direction,searchText}) =>{
+    searchByType: async (_,{searchText}) =>{
     try{
-        if (!["name", "date", "nickName"].includes(orderBy)) 
-        return {__typename:"errorMessage",success:false, message:"el filtro orden es invalido."};
-        const response = await service.searchByType(orderBy,direction,searchText);
+        const response = await service.searchByType(searchText);
         return response.success ? {
         __typename:"searchRecipe",
         success:response.success,
@@ -147,11 +139,9 @@ const resolvers = {
         };
     }
     },
-    searchByName: async (_,{orderBy,direction,searchText}) => {
+    searchByName: async (_,{searchText}) => {
     try{
-        if (!["name", "date"].includes(orderBy)) 
-        return {__typename:"errorMessage",success:false, message:"el filtro orden es ivvalido."};
-        const response = await service.searchByName(orderBy,direction,searchText);
+        const response = await service.searchByName(searchText);
         return response.success ? {
         __typename:"searchRecipe",
         success:response.success,

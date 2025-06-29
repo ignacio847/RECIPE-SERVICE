@@ -157,11 +157,11 @@ type Query{
     getRecipesByUser: getRecipesByUserMessage!
     showRecipeDetails(id:String!):recipeDetailsMessage!
     showRecipeNotApproved:recipeNotApprovedMessage!
-    searchWithIngredients(orderBy:String!,direction:String,searchText:String!):searchRecipeMessage!
-    searchWithOutIngredients(orderBy:String!,direction:String,searchText:String!):searchRecipeMessage!
-    searchByNickName(orderBy:String!,direction:String,searchText:String!):searchRecipeMessage!
-    searchByType(orderBy:String!,direction:String,searchText:String!):searchRecipeMessage!
-    searchByName(orderBy:String!,direction:String,searchText:String!):searchRecipeMessage!
+    searchWithIngredients(searchText:String!):searchRecipeMessage!
+    searchWithOutIngredients(searchText:String!):searchRecipeMessage!
+    searchByNickName(searchText:String!):searchRecipeMessage!
+    searchByType(searchText:String!):searchRecipeMessage!
+    searchByName(searchText:String!):searchRecipeMessage!
     calculatePortions(id:String!, portion:Float!):portionsMessage!
     calculatePortionsByIngredient(id:String!, portion:Int!, ingredientName:String!):portionsMessage!
     existRecipeByName(name:String!):existRecipeByNameMessage!
