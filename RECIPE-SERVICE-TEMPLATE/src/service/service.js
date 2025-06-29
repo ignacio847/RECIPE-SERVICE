@@ -479,37 +479,26 @@ const searchByType = async (searchText) => {
 };
 
 const searchByName = async (searchText) => {
-    try {
-      const recipes = await Recipe.aggregate([
-        {
-          $match: {
-            name: { $regex: searchText, $options: 'i' }
-          }
-        },
-        {
-          $group: {
-            _id: "$name",
-            doc: { $first: "$$ROOT" } 
-          }
-        },
-        {
-          $replaceRoot: { newRoot: "$doc" } 
-        },
-        {
-          $sort: "name"
-        },
-        {
-          $project: {
-            _id: 1,
-            nickName: 1,
-            name: 1,
-            image:1,
-            description: 1,
-            numberOfStart:1,
-            creationDate:1
-          }
-        }
-      ]);
+ try{
+  let recipes = await Recipe.aggregate([
+    { $match: { name: searchText } },
+    { $group: { _id: "$name", doc: { $first: "$$ROOT" } } },
+    { $replaceRoot: { newRoot: "$doc" } },
+    { $sort: { name: 1 } },
+    { $project: { _id: 1, nickName: 1, name: 1, image:1, description: 1, numberOfStart:1, creationDate:1 } }
+  ]);
+
+  if (recipes.length === 0) {
+    // Si no hay resultados exactos, buscar parcial
+    recipes = await Recipe.aggregate([
+      { $match: { name: { $regex: searchText, $options: 'i' } } },
+      { $group: { _id: "$name", doc: { $first: "$$ROOT" } } },
+      { $replaceRoot: { newRoot: "$doc" } },
+      { $sort: { name: 1 } },
+      { $project: { _id: 1, nickName: 1, name: 1, image:1, description: 1, numberOfStart:1, creationDate:1 } }
+    ]);
+  }
+
   
       return recipes.length > 0
         ? { success: true, message: recipes }
