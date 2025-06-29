@@ -412,7 +412,7 @@ const searchRecipesWithIngredients = async (searchText) => {
         : {};
 
         const recipes = await Recipe.find(filter)
-          .select("_id nickName name image description")
+          .select("_id nickName name image description numberOfStart creationDate")
           .sort({ "name": -1 }) 
   
       return recipes.length > 0
@@ -438,7 +438,7 @@ const searchRecipesWithoutIngredients = async (searchText) => {
           }
         : {};
   
-      const recipe = await Recipe.find(filter).select("_id nickName name image description").sort({ "name": -1 }) ;
+      const recipe = await Recipe.find(filter).select("_id nickName name image description numberOfStart creationDate").sort({ "name": -1 }) ;
   
       return recipe.length > 0
         ? { success: true, message: recipe }
@@ -452,7 +452,7 @@ const searchRecipeByNickName = async (searchText) =>{
     try{
         const recipes = await Recipe.find({
             nickName: { $regex: new RegExp(`^${searchText}$`, 'i') }
-          }).select("_id name image description").sort({ "name": -1 }) ;
+          }).select("_id name image description numberOfStart creationDate").sort({ "name": -1 }) ;
 
           return recipes.length > 0
           ? {success:true, message:recipes}
@@ -467,7 +467,7 @@ const searchByType = async (searchText) => {
     try{
         const recipes = await Recipe.find({
             typeOfDish: { $regex: new RegExp(`^${searchText}$`, 'i') }
-          }).select("_id nickName name image description").sort({ "name": -1 }) ;
+          }).select("_id nickName name image description numberOfStart creationDate").sort({ "name": -1 }) ;
 
           return recipes.length > 0
           ? {success:true, message:recipes}
@@ -504,7 +504,9 @@ const searchByName = async (searchText) => {
             nickName: 1,
             name: 1,
             image:1,
-            description: 1
+            description: 1,
+            numberOfStart:1,
+            creationDate:1
           }
         }
       ]);
