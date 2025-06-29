@@ -630,7 +630,7 @@ const updateInterests = async (nickName, interests) =>{
 const showLastThreeRecipes = async () => {
   try {
     const response = await Recipe.find({ approved: true })
-    .sort({ date: -1 }) 
+    .sort({ creationDate: -1 }) 
     .select("_id image")
     .limit(3);
     console.log(response)
