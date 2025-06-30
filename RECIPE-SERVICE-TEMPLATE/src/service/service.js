@@ -399,21 +399,27 @@ const searchRecipesWithIngredients = async (searchText) => {
   try {
     const ingredients = search.extractIngredients(searchText);
 
-    const filter = ingredients.length > 0
-      ? {
-          $and: ingredients.map(ing => ({
-            ingredients: {
-              $elemMatch: {
-                name: { $regex: `^${ing}$`, $options: "i" } 
-              }
-            }
-          }))
+    if (ingredients.length === 0) {
+      // No hay ingredientes, devuelve todo o vacio según necesites
+      return { success: false, message: "no se encontraron resultados." };
+    }
+
+    const filter = {
+      $and: ingredients.map(ing => ({
+        ingredients: {
+          $elemMatch: {
+            $or: [
+              { name: { $regex: `^${ing}$`, $options: "i" } }, // exacta
+              { name: { $regex: ing, $options: "i" } }        // parcial
+            ]
+          }
         }
-      : {};
+      }))
+    };
 
     const recipes = await Recipe.find(filter)
       .select("_id nickName name image description numberOfStart creationDate")
-      .sort({ "name": 1 });
+      .sort({ name: 1 });
 
     const recipesWithStringDate = recipes.map(r => ({
       ...r.toObject(),
@@ -433,19 +439,21 @@ const searchRecipesWithoutIngredients = async (searchText) => {
   try {
     const ingredients = search.extractIngredients(searchText);
 
-    const filter = ingredients.length > 0
-      ? {
-          "ingredients.name": {
-            $not: {
-              $in: ingredients.map(ing => new RegExp(`^${ing}$`, 'i'))
-            }
-          }
+    if (ingredients.length === 0) {
+      return { success: false, message: "no se encontraron resultados." };
+    }
+
+    const filter = {
+      $nor: ingredients.map(ing => ({
+        "ingredients.name": {
+          $regex: ing, $options: "i"
         }
-      : {};
+      }))
+    };
 
     const recipe = await Recipe.find(filter)
       .select("_id nickName name image description numberOfStart creationDate")
-      .sort({ "name": 1 });
+      .sort({ name: 1 });
 
     const recipeWithStringDate = recipe.map(r => ({
       ...r.toObject(),
@@ -455,6 +463,7 @@ const searchRecipesWithoutIngredients = async (searchText) => {
     return recipeWithStringDate.length > 0
       ? { success: true, message: recipeWithStringDate }
       : { success: false, message: "no se encontraron resultados." };
+
   } catch (error) {
     return { success: false, message: error.message };
   }
