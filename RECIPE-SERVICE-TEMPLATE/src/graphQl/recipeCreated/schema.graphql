@@ -19,7 +19,7 @@ type recipeGot{
     image:String!
     description:String
     numberOfStart:Float!
-    creationDate:String
+    creationDate:Date
 
 }
 
