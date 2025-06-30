@@ -396,117 +396,145 @@ const deleteRecipeFromList = async (recipeId) =>{
 };
 
 const searchRecipesWithIngredients = async (searchText) => {
-    try {
-      const ingredients = search.extractIngredients(searchText);
-  
-      const filter = ingredients.length > 0
-        ? {
-            $and: ingredients.map(ing => ({
-              ingredients: {
-                $elemMatch: {
-                  name: { $regex: `^${ing}$`, $options: "i" } 
-                }
-              }
-            }))
-          }
-        : {};
+  try {
+    const ingredients = search.extractIngredients(searchText);
 
-        const recipes = await Recipe.find(filter)
-          .select("_id nickName name image description numberOfStart creationDate")
-          .sort({ "name":1 }) 
-  
-      return recipes.length > 0
-        ? { success: true, message: recipes }
-        : { success: false, message: "no se encontraron resultados." };
-  
-    } catch (error) {
-      return { success: false, message: error.message };
-    }
-};
-  
-const searchRecipesWithoutIngredients = async (searchText) => {
-    try {
-      const ingredients = search.extractIngredients(searchText);
-  
-      const filter = ingredients.length > 0
-        ? {
-            "ingredients.name": {
-              $not: {
-                $in: ingredients.map(ing => new RegExp(`^${ing}$`, 'i'))
+    const filter = ingredients.length > 0
+      ? {
+          $and: ingredients.map(ing => ({
+            ingredients: {
+              $elemMatch: {
+                name: { $regex: `^${ing}$`, $options: "i" } 
               }
             }
-          }
-        : {};
-  
-      const recipe = await Recipe.find(filter).select("_id nickName name image description numberOfStart creationDate").sort({ "name": 1 }) ;
-  
-      return recipe.length > 0
-        ? { success: true, message: recipe }
-        : { success: false, message: "no se encontraron resultados." };
-    } catch (error) {
-      return { success: false, message: error.message };
-    }
-  };
+          }))
+        }
+      : {};
 
-const searchRecipeByNickName = async (searchText) =>{
-    try{
-        const recipes = await Recipe.find({
-            nickName: { $regex: new RegExp(`^${searchText}$`, 'i') }
-          }).select("_id name image description numberOfStart creationDate").sort({ "name":1 }) ;
+    const recipes = await Recipe.find(filter)
+      .select("_id nickName name image description numberOfStart creationDate")
+      .sort({ "name": 1 });
 
-          return recipes.length > 0
-          ? {success:true, message:recipes}
-          : {success:false, message:"no se encontraron resultados."};
+    const recipesWithStringDate = recipes.map(r => ({
+      ...r.toObject(),
+      creationDate: r.creationDate.toISOString()
+    }));
 
-    }catch(error){
-        return {success:false, message:error.message};
-    }
+    return recipesWithStringDate.length > 0
+      ? { success: true, message: recipesWithStringDate }
+      : { success: false, message: "no se encontraron resultados." };
+
+  } catch (error) {
+    return { success: false, message: error.message };
+  }
 };
-  
+
+const searchRecipesWithoutIngredients = async (searchText) => {
+  try {
+    const ingredients = search.extractIngredients(searchText);
+
+    const filter = ingredients.length > 0
+      ? {
+          "ingredients.name": {
+            $not: {
+              $in: ingredients.map(ing => new RegExp(`^${ing}$`, 'i'))
+            }
+          }
+        }
+      : {};
+
+    const recipe = await Recipe.find(filter)
+      .select("_id nickName name image description numberOfStart creationDate")
+      .sort({ "name": 1 });
+
+    const recipeWithStringDate = recipe.map(r => ({
+      ...r.toObject(),
+      creationDate: r.creationDate.toISOString()
+    }));
+
+    return recipeWithStringDate.length > 0
+      ? { success: true, message: recipeWithStringDate }
+      : { success: false, message: "no se encontraron resultados." };
+  } catch (error) {
+    return { success: false, message: error.message };
+  }
+};
+
+const searchRecipeByNickName = async (searchText) => {
+  try {
+    const recipes = await Recipe.find({
+      nickName: { $regex: new RegExp(`^${searchText}$`, 'i') }
+    })
+      .select("_id name image description numberOfStart creationDate")
+      .sort({ "name": 1 });
+
+    const recipesWithStringDate = recipes.map(r => ({
+      ...r.toObject(),
+      creationDate: r.creationDate.toISOString()
+    }));
+
+    return recipesWithStringDate.length > 0
+      ? { success: true, message: recipesWithStringDate }
+      : { success: false, message: "no se encontraron resultados." };
+
+  } catch (error) {
+    return { success: false, message: error.message };
+  }
+};
+
 const searchByType = async (searchText) => {
-    try{
-        const recipes = await Recipe.find({
-            typeOfDish: { $regex: new RegExp(`^${searchText}$`, 'i') }
-          }).select("_id nickName name image description numberOfStart creationDate").sort({ "name": 1 }) ;
+  try {
+    const recipes = await Recipe.find({
+      typeOfDish: { $regex: new RegExp(`^${searchText}$`, 'i') }
+    })
+      .select("_id nickName name image description numberOfStart creationDate")
+      .sort({ "name": 1 });
 
-          return recipes.length > 0
-          ? {success:true, message:recipes}
-          : {success:false, message:"no se encontraron resultados."};
-    }catch(error){
-        return {success:false, message:error.message};
-    }
+    const recipesWithStringDate = recipes.map(r => ({
+      ...r.toObject(),
+      creationDate: r.creationDate.toISOString()
+    }));
 
+    return recipesWithStringDate.length > 0
+      ? { success: true, message: recipesWithStringDate }
+      : { success: false, message: "no se encontraron resultados." };
+  } catch (error) {
+    return { success: false, message: error.message };
+  }
 };
 
 const searchByName = async (searchText) => {
- try{
-  let recipes = await Recipe.aggregate([
-    { $match: { name: searchText } },
-    { $group: { _id: "$name", doc: { $first: "$$ROOT" } } },
-    { $replaceRoot: { newRoot: "$doc" } },
-    { $sort: { name: 1 } },
-    { $project: { _id: 1, nickName: 1, name: 1, image:1, description: 1, numberOfStart:1, creationDate:1 } }
-  ]);
-
-  if (recipes.length === 0) {
-    // Si no hay resultados exactos, buscar parcial
-    recipes = await Recipe.aggregate([
-      { $match: { name: { $regex: searchText, $options: 'i' } } },
+  try {
+    let recipes = await Recipe.aggregate([
+      { $match: { name: searchText } },
       { $group: { _id: "$name", doc: { $first: "$$ROOT" } } },
       { $replaceRoot: { newRoot: "$doc" } },
       { $sort: { name: 1 } },
-      { $project: { _id: 1, nickName: 1, name: 1, image:1, description: 1, numberOfStart:1, creationDate:1 } }
+      { $project: { _id: 1, nickName: 1, name: 1, image: 1, description: 1, numberOfStart: 1, creationDate: 1 } }
     ]);
-  }
 
-  
-      return recipes.length > 0
-        ? { success: true, message: recipes }
-        : { success: false, message: "No se encontraron resultados." };
-  
-    } catch (error) {
-      return { success: false, message: error.message };
+    if (recipes.length === 0) {
+      recipes = await Recipe.aggregate([
+        { $match: { name: { $regex: searchText, $options: 'i' } } },
+        { $group: { _id: "$name", doc: { $first: "$$ROOT" } } },
+        { $replaceRoot: { newRoot: "$doc" } },
+        { $sort: { name: 1 } },
+        { $project: { _id: 1, nickName: 1, name: 1, image: 1, description: 1, numberOfStart: 1, creationDate: 1 } }
+      ]);
     }
+
+    const recipesWithStringDate = recipes.map(r => ({
+      ...r,
+      creationDate: r.creationDate.toISOString()
+    }));
+
+    return recipesWithStringDate.length > 0
+      ? { success: true, message: recipesWithStringDate }
+      : { success: false, message: "No se encontraron resultados." };
+
+  } catch (error) {
+    return { success: false, message: error.message };
+  }
 };
 
 const addRecipeToFavorite = async (_id, nickName) =>{
