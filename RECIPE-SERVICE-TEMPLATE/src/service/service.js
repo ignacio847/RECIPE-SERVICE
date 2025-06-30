@@ -404,7 +404,7 @@ const searchRecipesWithIngredients = async (searchText) => {
       return { success: false, message: "no se encontraron resultados." };
     }
 
-    const filter = {
+    const filter = {approved:true,
       $and: ingredients.map(ing => ({
         ingredients: {
           $elemMatch: {
@@ -443,7 +443,7 @@ const searchRecipesWithoutIngredients = async (searchText) => {
       return { success: false, message: "no se encontraron resultados." };
     }
 
-    const filter = {
+    const filter = {approved:true,
       $nor: ingredients.map(ing => ({
         "ingredients.name": {
           $regex: ing, $options: "i"
@@ -471,7 +471,7 @@ const searchRecipesWithoutIngredients = async (searchText) => {
 
 const searchRecipeByNickName = async (searchText) => {
   try {
-    const recipes = await Recipe.find({
+    const recipes = await Recipe.find({approved:true,
       nickName: { $regex: new RegExp(`^${searchText}$`, 'i') }
     })
       .select("_id name image description numberOfStart creationDate")
@@ -493,7 +493,7 @@ const searchRecipeByNickName = async (searchText) => {
 
 const searchByType = async (searchText) => {
   try {
-    const recipes = await Recipe.find({
+    const recipes = await Recipe.find({approved:true,
       typeOfDish: { $regex: new RegExp(`^${searchText}$`, 'i') }
     })
       .select("_id nickName name image description numberOfStart creationDate")
@@ -515,7 +515,7 @@ const searchByType = async (searchText) => {
 const searchByName = async (searchText) => {
   try {
     let recipes = await Recipe.aggregate([
-      { $match: { name: searchText } },
+      { $match: { name: searchText,approved:true} },
       { $group: { _id: "$name", doc: { $first: "$$ROOT" } } },
       { $replaceRoot: { newRoot: "$doc" } },
       { $sort: { name: 1 } },
@@ -524,7 +524,7 @@ const searchByName = async (searchText) => {
 
     if (recipes.length === 0) {
       recipes = await Recipe.aggregate([
-        { $match: { name: { $regex: searchText, $options: 'i' } } },
+        { $match: { name: { $regex: searchText, $options: 'i' },approved:true } },
         { $group: { _id: "$name", doc: { $first: "$$ROOT" } } },
         { $replaceRoot: { newRoot: "$doc" } },
         { $sort: { name: 1 } },
