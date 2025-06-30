@@ -59,106 +59,151 @@ const resolvers = {
           return {__typename:"recipeErrorMessage",success:false, message:error.message}
         }
     },
-    searchWithIngredients: async (_,{searchText}) => {
-    try{ 
-        const response = await service.searchRecipesWithIngredients(searchText);
-        return response.success ? {
-        __typename:"searchRecipe",
-        success:response.success,
-        recipes:response.message
-        }:{
-        __typename:"searchRecipe",
-        success:response.success,
-        message:response.message
-        } 
-    }catch(error){
-        return {
-        __typename:"recipeErrorMessage",
-        success:false,
-        message:error.message
-        };
-      }
-    },
-    searchWithOutIngredients: async (_,{searchText}) => {
-    try{
-        const response = await service.searchRecipesWithoutIngredients(searchText);
-        return response.success ? {
-        __typename:"searchRecipe",
-        success:response.success,
-        recipes: response.message
-        }:{
-        __typename:"searchRecipe",
-        success:response.success,
-        message:response.message
-        };
-    }catch(error){
-        return {
-        __typename:"recipeErrorMessage",
-        success:false,
-        message:error.message
-        };
+searchWithIngredients: async (_, { searchText }) => {
+  try {
+    const response = await service.searchRecipesWithIngredients(searchText);
+    if (response.success) {
+      const recipesWithFormattedDate = response.message.map(recipe => ({
+        ...recipe,
+        creationDate: recipe.creationDate ? new Date(recipe.creationDate).toISOString() : null,
+      }));
+      return {
+        __typename: "searchRecipe",
+        success: true,
+        recipes: recipesWithFormattedDate,
+      };
+    } else {
+      return {
+        __typename: "searchRecipe",
+        success: false,
+        message: response.message,
+      };
     }
-    },
-    searchByNickName: async (_,{searchText}) =>{
-    try{
-        const response = await service.searchRecipeByNickName(searchText);
-        return response.success ? {
-        __typename:"searchRecipe",
-        success:response.success,
-        recipes:response.message
-        }:{
-        __typename:"searchRecipe",
-        success:response.success,
-        message: response.message
-        };
-    }catch(error){
-        return {
-        __typename:"recipeErrorMessage",
-        success:false,
-        message:error.message
-        };
+  } catch (error) {
+    return {
+      __typename: "recipeErrorMessage",
+      success: false,
+      message: error.message,
+    };
+  }
+},
+
+searchWithOutIngredients: async (_, { searchText }) => {
+  try {
+    const response = await service.searchRecipesWithoutIngredients(searchText);
+    if (response.success) {
+      const recipesWithFormattedDate = response.message.map(recipe => ({
+        ...recipe,
+        creationDate: recipe.creationDate ? new Date(recipe.creationDate).toISOString() : null,
+      }));
+      return {
+        __typename: "searchRecipe",
+        success: true,
+        recipes: recipesWithFormattedDate,
+      };
+    } else {
+      return {
+        __typename: "searchRecipe",
+        success: false,
+        message: response.message,
+      };
     }
-    },
-    searchByType: async (_,{searchText}) =>{
-    try{
-        const response = await service.searchByType(searchText);
-        return response.success ? {
-        __typename:"searchRecipe",
-        success:response.success,
-        recipes:response.message
-        }:{
-        __typename:"searchRecipe",
-        success:response.success,
-        message: response.message
-        };
-    }catch(error){
-        return {
-        __typename:"recipeErrorMessage",
-        success:false,
-        message:error.message
-        };
+  } catch (error) {
+    return {
+      __typename: "recipeErrorMessage",
+      success: false,
+      message: error.message,
+    };
+  }
+},
+
+searchByNickName: async (_, { searchText }) => {
+  try {
+    const response = await service.searchRecipeByNickName(searchText);
+    if (response.success) {
+      const recipesWithFormattedDate = response.message.map(recipe => ({
+        ...recipe,
+        creationDate: recipe.creationDate ? new Date(recipe.creationDate).toISOString() : null,
+      }));
+      return {
+        __typename: "searchRecipe",
+        success: true,
+        recipes: recipesWithFormattedDate,
+      };
+    } else {
+      return {
+        __typename: "searchRecipe",
+        success: false,
+        message: response.message,
+      };
     }
-    },
-    searchByName: async (_,{searchText}) => {
-    try{
-        const response = await service.searchByName(searchText);
-        return response.success ? {
-        __typename:"searchRecipe",
-        success:response.success,
-        recipes:response.message
-        }:{
-        __typename:"searchRecipe",
-        success:response.success,
-        message: response.message
-        };
-    }catch(error){
-        return {
-        __typename:"recipeErrorMessage",
-        success:false,
-        message:error.message
-        };
+  } catch (error) {
+    return {
+      __typename: "recipeErrorMessage",
+      success: false,
+      message: error.message,
+    };
+  }
+},
+
+searchByType: async (_, { searchText }) => {
+  try {
+    const response = await service.searchByType(searchText);
+    if (response.success) {
+      const recipesWithFormattedDate = response.message.map(recipe => ({
+        ...recipe,
+        creationDate: recipe.creationDate ? new Date(recipe.creationDate).toISOString() : null,
+      }));
+      return {
+        __typename: "searchRecipe",
+        success: true,
+        recipes: recipesWithFormattedDate,
+      };
+    } else {
+      return {
+        __typename: "searchRecipe",
+        success: false,
+        message: response.message,
+      };
     }
-    },
+  } catch (error) {
+    return {
+      __typename: "recipeErrorMessage",
+      success: false,
+      message: error.message,
+    };
+  }
+},
+
+searchByName: async (_, { searchText }) => {
+  try {
+    const response = await service.searchByName(searchText);
+    if (response.success) {
+      const recipesWithFormattedDate = response.message.map(recipe => ({
+        ...recipe,
+        creationDate: recipe.creationDate ? new Date(recipe.creationDate).toISOString() : null,
+      }));
+      return {
+        __typename: "searchRecipe",
+        success: true,
+        recipes: recipesWithFormattedDate,
+      };
+    } else {
+      return {
+        __typename: "searchRecipe",
+        success: false,
+        message: response.message,
+      };
+    }
+  } catch (error) {
+    return {
+      __typename: "recipeErrorMessage",
+      success: false,
+      message: error.message,
+    };
+  }
+},
+
     calculatePortions: async (_, { id, portion}) => {
       try {
         const recipePortionsAndIngredients = await service.getPortionAndIngredientsFromRecipe(id);
