@@ -742,7 +742,7 @@ const showForDiet = async (nickName) => {
 const showForAbility = async (nickName) => {
   try {
     const interests = await Interests.findOne({ nickName }).select("intolerances ability");
-
+    let recipe;
     if(interests){
     const intolerance = interests.intolerances; // string, ej: "miel"
     const ability = interests.ability; // ej: "medio"
@@ -751,7 +751,7 @@ const showForAbility = async (nickName) => {
     const difficultyFilter = ability ? { difficulty: new RegExp(`^${ability}$`, 'i') } : {};
 
     // Busco receta aprobada, sin ingredientes que coincidan (parcial y case insensitive) con la intolerancia
-    let recipe = await Recipe.findOne({
+      recipe = await Recipe.findOne({
       approved: true,
       ingredients: {
         $not: {
@@ -762,7 +762,7 @@ const showForAbility = async (nickName) => {
       },
       ...difficultyFilter
     }).select("_id image difficulty");
-  }
+    }
     // Si no hay receta que cumpla, devuelvo la última receta aprobada
     if (!recipe) {
       recipe = await Recipe.findOne({ approved: true }).sort({ _id: -1 }).select("_id image difficulty");
