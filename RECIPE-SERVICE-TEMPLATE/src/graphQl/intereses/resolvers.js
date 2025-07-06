@@ -5,11 +5,11 @@ const resolvers = {
        
     },
     Mutation:{
-        addInterests: async (_,{nickname,interests})=>{
+        addInterests: async (_,{nickName,interests})=>{
             try{
                
                 const newInterests = {
-                    nickName:nickname,
+                    nickName:nickName,
                     ability:interests.ability,
                     typeOfDish: interests.typeOfDish,
                     diet:interests.diet,

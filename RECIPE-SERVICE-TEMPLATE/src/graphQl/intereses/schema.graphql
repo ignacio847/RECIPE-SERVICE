@@ -19,6 +19,6 @@ type Query{
     _empty:Boolean
 }
 type Mutation{
-    addInterests(nickname:String!,interests:interestsInput!):message!
-    updateInterests(nickname:String!,interests:interestsInput!):message!
+    addInterests(nickName:String!,interests:interestsInput!):message!
+    updateInterests(nickName:String!,interests:interestsInput!):message!
 }
