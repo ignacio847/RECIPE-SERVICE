@@ -10,6 +10,7 @@ input timeSpentInput{
 
 input interestsInput{
     ability:String!
+    typeOfDish:String!
     diet:String!
     intolerances:String!
     timeSpent:timeSpentInput!

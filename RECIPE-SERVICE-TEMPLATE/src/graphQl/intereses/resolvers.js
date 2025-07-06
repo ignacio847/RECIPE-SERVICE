@@ -7,24 +7,11 @@ const resolvers = {
     Mutation:{
         addInterests: async (_,{nickname,interests})=>{
             try{
-                const time = interests.timeSpent;
-                const ability = ["bajo", "medio", "alto"];
-                const habilidadValida = ability.includes(interests.ability.toLowerCase());
-                
-                if (
-                    time.initial >= time.end ||
-                    time.initial < 1 ||
-                    time.end > 45 ||
-                    !habilidadValida
-                ) {
-                    return {
-                        success: false,
-                        message: "Valores de preferencias inválidos."
-                    };
-                }
+               
                 const newInterests = {
                     nickName:nickname,
                     ability:interests.ability,
+                    typeOfDish: interests.typeOfDish,
                     diet:interests.diet,
                     intolerances:interests.intolerances,
                     timeSpent:{
