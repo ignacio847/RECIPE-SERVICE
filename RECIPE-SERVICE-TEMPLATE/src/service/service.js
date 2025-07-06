@@ -743,21 +743,32 @@ const showForAbility = async (nickName) => {
   try {
     const interests = await Interests.findOne({ nickName }).select("intolerances ability");
 
-    let intolerances = [];
-    let ability;
-
-    if (interests) {
-      intolerances = interests.intolerances || [];
-      ability = interests.ability;
+    if (!interests) {
+      return { success: false, message: "No se encontraron intereses para el usuario." };
     }
 
-    let recipe = await Recipe.findOne({approved:true,
-      ingredients: { $not: { $elemMatch: { name: intolerances } } },
-      ...(ability && { difficulty })
+    const intolerance = interests.intolerances; // string, ej: "miel"
+    const ability = interests.ability; // ej: "medio"
+
+    // Armo el filtro para difficulty con regex case insensitive si existe ability
+    const difficultyFilter = ability ? { difficulty: new RegExp(`^${ability}$`, 'i') } : {};
+
+    // Busco receta aprobada, sin ingredientes que coincidan (parcial y case insensitive) con la intolerancia
+    let recipe = await Recipe.findOne({
+      approved: true,
+      ingredients: {
+        $not: {
+          $elemMatch: {
+            name: { $regex: intolerance, $options: "i" }
+          }
+        }
+      },
+      ...difficultyFilter
     }).select("_id image difficulty");
 
+    // Si no hay receta que cumpla, devuelvo la última receta aprobada
     if (!recipe) {
-      recipe = await Recipe.findOne({approved:true}).sort({ _id: -1 }).select("_id image difficulty");
+      recipe = await Recipe.findOne({ approved: true }).sort({ _id: -1 }).select("_id image difficulty");
     }
 
     if (!recipe) {
