@@ -20,7 +20,7 @@ const resolvers = {
                     }
                 }
 
-                const response = await service.addInterests(nickname,newInterests);
+                const response = await service.addInterests(nickName,newInterests);
                 return response;
             }catch(error){
                 return {success:false, message:error.message};
