@@ -12,13 +12,15 @@ const resolvers = {
           const diet = await service.showForDiet(informationToken.nickName);
           const timeSpent = await service.showForTimeSpent(informationToken.nickName);
           const ability = await service.showForAbility(informationToken.nickName);
-          console.log(lastThreeRecipes,diet,timeSpent,ability)
+          const typeOfDish = await service.showForTypeOfDish(informationToken.nickName);
+          console.log(lastThreeRecipes,diet,timeSpent,ability,typeOfDish)
           return {
             __typename: "homeMessageSuccess",
             lastThreeRecipes,
             diet,
             timeSpent,
-            ability
+            ability,
+            typeOfDish
           };
         }
       } catch (error) {

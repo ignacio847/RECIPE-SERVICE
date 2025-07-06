@@ -744,13 +744,10 @@ const showForAbility = async (nickName) => {
     const interests = await Interests.findOne({ nickName }).select("intolerances ability");
     let recipe;
     if(interests){
-    const intolerance = interests.intolerances; // string, ej: "miel"
-    const ability = interests.ability; // ej: "medio"
-
-    // Armo el filtro para difficulty con regex case insensitive si existe ability
+    const intolerance = interests.intolerances; 
+    const ability = interests.ability; 
     const difficultyFilter = ability ? { difficulty: new RegExp(`^${ability}$`, 'i') } : {};
 
-    // Busco receta aprobada, sin ingredientes que coincidan (parcial y case insensitive) con la intolerancia
       recipe = await Recipe.findOne({
       approved: true,
       ingredients: {
@@ -763,7 +760,7 @@ const showForAbility = async (nickName) => {
       ...difficultyFilter
     }).select("_id image difficulty");
     }
-    // Si no hay receta que cumpla, devuelvo la última receta aprobada
+   
     if (!recipe) {
       recipe = await Recipe.findOne({ approved: true }).sort({ _id: -1 }).select("_id image difficulty");
     }
@@ -777,6 +774,44 @@ const showForAbility = async (nickName) => {
     return { success: true, title, recipe };
 
   } catch (error) {
+    return { success: false, message: error.message };
+  }
+};
+
+const showForTypeOfDish = async (nickName) => {
+  try{
+    const interests = await Interests.findOne({ nickName }).select("intolerances typeOfDish");
+    let recipe;
+    if(interests){
+    const intolerance = interests.intolerances; 
+    const typeOfDish = interests.typeOfDish; 
+    const typeOfDishFilter = typeOfDish ? { typeOfDish: new RegExp(`^${typeOfDish}$`, 'i') } : {};
+
+      recipe = await Recipe.findOne({
+      approved: true,
+      ingredients: {
+        $not: {
+          $elemMatch: {
+            name: { $regex: intolerance, $options: "i" }
+          }
+        }
+      },
+      ...typeOfDishFilter
+    }).select("_id image typeOfDish");
+    }
+   
+    if (!recipe) {
+      recipe = await Recipe.findOne({ approved: true }).sort({ _id: -1 }).select("_id image typeOfDish");
+    }
+
+    if (!recipe) {
+      return { success: false, message: "No se encontraron recetas." };
+    }
+
+    const title = "Tipo de Plato " + recipe.typeOfDish;
+
+    return { success: true, title, recipe };
+  }catch(error){
     return { success: false, message: error.message };
   }
 };
@@ -838,6 +873,7 @@ module.exports = {
     showForTimeSpent,
     showForDiet,
     showForAbility,
+    showForTypeOfDish,
     existRecipeByName,
     existNameForUpdate
 };

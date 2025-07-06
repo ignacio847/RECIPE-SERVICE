@@ -22,6 +22,7 @@ type homeMessageSuccess {
   ability:showRecipeCard
   diet:showRecipeCard
   timeSpent:showRecipeCard
+  typeOfDish:showRecipeCard
 }
 
 type errorHomeMessage{
