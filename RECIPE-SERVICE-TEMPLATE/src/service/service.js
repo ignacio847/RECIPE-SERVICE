@@ -743,10 +743,7 @@ const showForAbility = async (nickName) => {
   try {
     const interests = await Interests.findOne({ nickName }).select("intolerances ability");
 
-    if (!interests) {
-      return { success: false, message: "No se encontraron intereses para el usuario." };
-    }
-
+    if(interests){
     const intolerance = interests.intolerances; // string, ej: "miel"
     const ability = interests.ability; // ej: "medio"
 
@@ -765,7 +762,7 @@ const showForAbility = async (nickName) => {
       },
       ...difficultyFilter
     }).select("_id image difficulty");
-
+  }
     // Si no hay receta que cumpla, devuelvo la última receta aprobada
     if (!recipe) {
       recipe = await Recipe.findOne({ approved: true }).sort({ _id: -1 }).select("_id image difficulty");
