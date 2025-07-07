@@ -4,6 +4,7 @@ const RecipeList = require("../model/recipeList");
 const RecipeFavorite = require("../model/favoriteList");
 const search = require("../util/ingredientSearch");
 const Interests = require("../model/interests");
+const interests = require("../model/interests");
 
 const updateLoadRecipe = async (recipe) =>{
     try{
@@ -834,7 +835,16 @@ const existNameForUpdate = async (_id,name,nickName) =>{
     return {success:false,message:error.message}
   }
 };
-                                                                             
+       
+const getInterests = async (nickName) =>{
+  try{
+    const response = await Interests.findOne({nickName}).select("ability typeOfDish diet intolerances timeSpent");
+    return response ? {success:true, message:"se encontraron los intereses",interests:response}:{success:false,message:"no se encontraron intereses"};
+  }catch(error){
+    return {success:false, message:error.message}
+  }
+};
+
 module.exports = { 
     updateLoadRecipe,
     replaceRecipe,
@@ -875,5 +885,6 @@ module.exports = {
     showForAbility,
     showForTypeOfDish,
     existRecipeByName,
-    existNameForUpdate
+    existNameForUpdate,
+    getInterests
 };

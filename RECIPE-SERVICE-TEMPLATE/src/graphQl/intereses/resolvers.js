@@ -2,7 +2,14 @@ const service = require("../../service/service");
 
 const resolvers = {
     Query:{
-       
+       getInterests: async (_,{},context)=>{
+       try{
+        const {informationToken} = context;
+        return service.getInterests(informationToken.nickName)
+       }catch(error){
+        return {success:false, message:error.message}
+       }
+       } 
     },
     Mutation:{
         addInterests: async (_,{nickName,interests})=>{

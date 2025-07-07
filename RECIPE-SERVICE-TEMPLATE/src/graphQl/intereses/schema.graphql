@@ -18,7 +18,31 @@ input interestsInput{
 type Query{
     _empty:Boolean
 }
+
+type timeSpent{
+    initial:Int!
+    end:Int!
+}
+
+type interests{
+    ability:String
+    typeOfDish:String
+    diet:String
+    intolerances:String
+    timeSpent:timeSpent
+}
+
+type interestsMessage{
+    success:Boolean!
+    message:String!
+    interests:interests
+}
+
 type Mutation{
     addInterests(nickName:String!,interests:interestsInput!):message!
     updateInterests(nickName:String!,interests:interestsInput!):message!
+}
+
+type Query{
+    getInterests:interestsMessage!
 }
