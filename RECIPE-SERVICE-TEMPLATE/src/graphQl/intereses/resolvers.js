@@ -33,7 +33,7 @@ const resolvers = {
                 return {success:false, message:error.message};
             }
         },
-        updateInterests: async (_,{interests})=>{
+        updateInterests: async (_,{interests},context)=>{
             try{
                 const {informationToken} = context;
                 const response = service.updateInterests(informationToken.nickname, interests);
