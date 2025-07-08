@@ -33,24 +33,10 @@ const resolvers = {
                 return {success:false, message:error.message};
             }
         },
-        updateInterests: async (_,{nickname,interests})=>{
+        updateInterests: async (_,{interests})=>{
             try{
-                const time = interests.timeSpent;
-                const ability = ["bajo", "medio", "alto"];
-                const habilidadValida = ability.includes(interests.ability.toLowerCase());
-                
-                if (
-                    time.initial >= time.end ||
-                    time.initial < 1 ||
-                    time.end > 45 ||
-                    !habilidadValida
-                ) {
-                    return {
-                        success: false,
-                        message: "Valores de preferencias inválidos."
-                    };
-                }
-                const response = service.updateInterests(nickname, interests);
+                const {informationToken} = context;
+                const response = service.updateInterests(informationToken.nickname, interests);
                 return response;
             }catch(error){
                 return {success:false,message:error.message};

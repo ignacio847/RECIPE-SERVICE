@@ -40,7 +40,7 @@ type interestsMessage{
 
 type Mutation{
     addInterests(nickName:String!,interests:interestsInput!):message!
-    updateInterests(nickName:String!,interests:interestsInput!):message!
+    updateInterests(interests:interestsInput!):message!
 }
 
 type Query{
