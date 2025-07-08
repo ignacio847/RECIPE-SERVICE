@@ -36,7 +36,7 @@ const resolvers = {
         updateInterests: async (_,{interests},context)=>{
             try{
                 const {informationToken} = context;
-                const response = service.updateInterests(informationToken.nickname, interests);
+                const response = service.updateInterests(informationToken.nickName, interests);
                 return response;
             }catch(error){
                 return {success:false,message:error.message};
