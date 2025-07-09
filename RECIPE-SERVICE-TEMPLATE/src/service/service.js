@@ -718,13 +718,22 @@ const showForDiet = async (nickName) => {
       diet = interests.diet;
     }
 
-    let recipe = await Recipe.findOne({approved:true,
-      ingredients: { $not: { $elemMatch: { name: intolerances } } },
-      ...(diet && { diet })
+    const dietRegex = diet ? { diet: { $regex: diet, $options: "i" } } : {};
+
+    let recipe = await Recipe.findOne({
+      approved: true,
+      ingredients: {
+        $not: {
+          $elemMatch: {
+            name: { $in: intolerances }
+          }
+        }
+      },
+      ...dietRegex
     }).select("_id image typeOfDiet");
 
     if (!recipe) {
-      recipe = await Recipe.findOne({approved:true}).sort({ _id: -1 }).select("_id image typeOfDiet");
+      recipe = await Recipe.findOne({ approved: true }).sort({ _id: -1 }).select("_id image typeOfDiet");
     }
 
     if (!recipe) {
@@ -739,6 +748,7 @@ const showForDiet = async (nickName) => {
     return { success: false, message: error.message };
   }
 };
+
 
 const showForAbility = async (nickName) => {
   try {
@@ -780,27 +790,31 @@ const showForAbility = async (nickName) => {
 };
 
 const showForTypeOfDish = async (nickName) => {
-  try{
+  try {
     const interests = await Interests.findOne({ nickName }).select("intolerances typeOfDish");
     let recipe;
-    if(interests){
-    const intolerance = interests.intolerances; 
-    const typeOfDish = interests.typeOfDish; 
-    const typeOfDishFilter = typeOfDish ? { typeOfDish: new RegExp(`^${typeOfDish}$`, 'i') } : {};
+
+    if (interests) {
+      const intolerance = interests.intolerances;
+      const typeOfDish = interests.typeOfDish;
+      
+      const typeOfDishRegex = typeOfDish
+        ? { typeOfDish: { $regex: typeOfDish, $options: "i" } }
+        : {};
 
       recipe = await Recipe.findOne({
-      approved: true,
-      ingredients: {
-        $not: {
-          $elemMatch: {
-            name: { $regex: intolerance, $options: "i" }
+        approved: true,
+        ingredients: {
+          $not: {
+            $elemMatch: {
+              name: { $regex: intolerance, $options: "i" }
+            }
           }
-        }
-      },
-      ...typeOfDishFilter
-    }).select("_id image typeOfDish");
+        },
+        ...typeOfDishRegex
+      }).select("_id image typeOfDish");
     }
-   
+
     if (!recipe) {
       recipe = await Recipe.findOne({ approved: true }).sort({ _id: -1 }).select("_id image typeOfDish");
     }
@@ -812,7 +826,7 @@ const showForTypeOfDish = async (nickName) => {
     const title = "Tipo de Plato " + recipe.typeOfDish;
 
     return { success: true, title, recipe };
-  }catch(error){
+  } catch (error) {
     return { success: false, message: error.message };
   }
 };
