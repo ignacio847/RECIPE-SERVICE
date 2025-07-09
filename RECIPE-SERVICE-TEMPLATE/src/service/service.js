@@ -627,13 +627,13 @@ const updateInterests = async (nickName, interests) =>{
         const existInterests = await Interests.findOne({nickName});
         if(!existInterests)
             return {success:false, message:"no existen intereses previamente cargados."};
-        const { ability,typeOfDiet, diet, intolerances, timeSpent } = interests;
+        const { ability,typeOfDish, diet, intolerances, timeSpent } = interests;
         const response = await Interests.updateMany(
             {nickName:nickName},
             {
                 $set:{
                     ability,
-                    typeOfDiet,
+                    typeOfDish,
                     diet,
                     intolerances,
                     timeSpent:{
