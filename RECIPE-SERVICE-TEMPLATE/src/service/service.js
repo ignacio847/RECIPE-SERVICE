@@ -5,6 +5,10 @@ const RecipeFavorite = require("../model/favoriteList");
 const search = require("../util/ingredientSearch");
 const Interests = require("../model/interests");
 
+const escapeRegex = (string) => {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+};
+
 const updateLoadRecipe = async (recipe) =>{
     try{
     const response = await Recipe.findOneAndUpdate(
@@ -718,7 +722,9 @@ const showForDiet = async (nickName) => {
       diet = interests.diet;
     }
 
-    const dietRegex = diet ? { diet: { $regex: diet, $options: "i" } } : {};
+    const dietFilter = diet
+      ? { diet: { $regex: `.*${escapeRegex(diet)}.*`, $options: "i" } }
+      : {};
 
     let recipe = await Recipe.findOne({
       approved: true,
@@ -729,7 +735,7 @@ const showForDiet = async (nickName) => {
           }
         }
       },
-      ...dietRegex
+      ...dietFilter
     }).select("_id image typeOfDiet");
 
     if (!recipe) {
@@ -748,7 +754,6 @@ const showForDiet = async (nickName) => {
     return { success: false, message: error.message };
   }
 };
-
 
 const showForAbility = async (nickName) => {
   try {
@@ -797,9 +802,9 @@ const showForTypeOfDish = async (nickName) => {
     if (interests) {
       const intolerance = interests.intolerances;
       const typeOfDish = interests.typeOfDish;
-      
-      const typeOfDishRegex = typeOfDish
-        ? { typeOfDish: { $regex: typeOfDish, $options: "i" } }
+
+      const typeOfDishFilter = typeOfDish
+        ? { typeOfDish: { $regex: `.*${escapeRegex(typeOfDish)}.*`, $options: "i" } }
         : {};
 
       recipe = await Recipe.findOne({
@@ -811,7 +816,7 @@ const showForTypeOfDish = async (nickName) => {
             }
           }
         },
-        ...typeOfDishRegex
+        ...typeOfDishFilter
       }).select("_id image typeOfDish");
     }
 
