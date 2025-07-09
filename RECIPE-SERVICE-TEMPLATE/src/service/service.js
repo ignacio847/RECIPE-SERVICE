@@ -497,11 +497,12 @@ const searchRecipeByNickName = async (searchText) => {
 
 const searchByType = async (searchText) => {
   try {
-    const recipes = await Recipe.find({approved:true,
-      typeOfDish: { $regex: new RegExp(`^${searchText}$`, 'i') }
+    const recipes = await Recipe.find({
+      approved: true,
+      typeOfDish: { $regex: searchText, $options: 'i' }  // búsqueda parcial e insensible a mayúsculas
     })
       .select("_id nickName name image description numberOfStart creationDate")
-      .sort({ "name": 1 });
+      .sort({ name: 1 });
 
     const recipesWithStringDate = recipes.map(r => ({
       ...r.toObject(),
