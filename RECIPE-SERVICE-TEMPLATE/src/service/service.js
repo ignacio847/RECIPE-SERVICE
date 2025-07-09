@@ -4,7 +4,6 @@ const RecipeList = require("../model/recipeList");
 const RecipeFavorite = require("../model/favoriteList");
 const search = require("../util/ingredientSearch");
 const Interests = require("../model/interests");
-const interests = require("../model/interests");
 
 const updateLoadRecipe = async (recipe) =>{
     try{
@@ -628,12 +627,13 @@ const updateInterests = async (nickName, interests) =>{
         const existInterests = await Interests.findOne({nickName});
         if(!existInterests)
             return {success:false, message:"no existen intereses previamente cargados."};
-        const { ability, diet, intolerances, timeSpent } = interests;
+        const { ability,typeOfDiet, diet, intolerances, timeSpent } = interests;
         const response = await Interests.updateMany(
             {nickName:nickName},
             {
                 $set:{
                     ability,
+                    typeOfDiet,
                     diet,
                     intolerances,
                     timeSpent:{
