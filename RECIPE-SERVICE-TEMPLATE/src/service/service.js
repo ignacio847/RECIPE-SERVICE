@@ -714,42 +714,36 @@ const showForDiet = async (nickName) => {
   try {
     const interests = await Interests.findOne({ nickName }).select("intolerances diet");
 
-    let intolerances = [];
-    let diet;
+    const intolerances = interests?.intolerances || "";
+    const userDiet = interests?.diet?.toLowerCase().trim();
 
-    if (interests) {
-      intolerances = interests.intolerances || [];
-      diet = interests.diet;
-    }
-
-    const dietFilter = diet
-      ? { diet: { $regex: `.*${escapeRegex(diet)}.*`, $options: "i" } }
-      : {};
-
-    let recipe = await Recipe.findOne({
+    const recipes = await Recipe.find({
       approved: true,
       ingredients: {
         $not: {
           $elemMatch: {
-            name: { $in: intolerances }
+            name: { $regex: intolerances, $options: "i" }
           }
         }
-      },
-      ...dietFilter
+      }
     }).select("_id image typeOfDiet");
 
-    if (!recipe) {
-      recipe = await Recipe.findOne({ approved: true }).sort({ _id: -1 }).select("_id image typeOfDiet");
-    }
+    const recipe = recipes.find(r => {
+      const recipeDiet = r.typeOfDiet?.toLowerCase().trim();
+      return (
+        recipeDiet &&
+        userDiet &&
+        (recipeDiet.includes(userDiet) || userDiet.includes(recipeDiet))
+      );
+    });
 
     if (!recipe) {
-      return { success: false, message: "No se encontraron recetas." };
+      const fallback = await Recipe.findOne({ approved: true }).sort({ _id: -1 }).select("_id image typeOfDiet");
+      if (!fallback) return { success: false, message: "No se encontraron recetas." };
+      return { success: true, title: "Dieta " + fallback.typeOfDiet, recipe: fallback };
     }
 
-    const title = "Dieta " + recipe.typeOfDiet;
-
-    return { success: true, title, recipe };
-
+    return { success: true, title: "Dieta " + recipe.typeOfDiet, recipe };
   } catch (error) {
     return { success: false, message: error.message };
   }
@@ -801,13 +795,10 @@ const showForTypeOfDish = async (nickName) => {
 
     if (interests) {
       const intolerance = interests.intolerances;
-      const typeOfDish = interests.typeOfDish;
+      const userTypeOfDish = interests.typeOfDish?.toLowerCase().trim();
 
-      const typeOfDishFilter = typeOfDish
-        ? { typeOfDish: { $regex: `.*${escapeRegex(typeOfDish)}.*`, $options: "i" } }
-        : {};
-
-      recipe = await Recipe.findOne({
+      // Buscamos todas las recetas válidas
+      const recipes = await Recipe.find({
         approved: true,
         ingredients: {
           $not: {
@@ -815,9 +806,18 @@ const showForTypeOfDish = async (nickName) => {
               name: { $regex: intolerance, $options: "i" }
             }
           }
-        },
-        ...typeOfDishFilter
+        }
       }).select("_id image typeOfDish");
+
+      // Filtramos por coincidencia parcial o exacta (lowercase)
+      recipe = recipes.find(r => {
+        const dish = r.typeOfDish?.toLowerCase().trim();
+        return (
+          dish &&
+          userTypeOfDish &&
+          (dish.includes(userTypeOfDish) || userTypeOfDish.includes(dish))
+        );
+      });
     }
 
     if (!recipe) {
