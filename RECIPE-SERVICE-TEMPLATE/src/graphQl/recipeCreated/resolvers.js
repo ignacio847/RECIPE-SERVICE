@@ -253,7 +253,9 @@ const resolvers = {
     existNameForUpdate: async (_,{id,name},context) =>{
       try{
         const {informationToken} = context;
-        return await service.existNameForUpdate(id,name,informationToken.nickName);
+        const response = await service.existNameForUpdate(id,name,informationToken.nickName);
+        console.log(response)
+        return response
       }catch(error){
         return {success:false,message:error.message}
       }

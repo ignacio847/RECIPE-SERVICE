@@ -847,12 +847,31 @@ const existRecipeByName = async (nickName,name) =>{
   }
 };
 
-const existNameForUpdate = async (_id,name,nickName) =>{
-  try{
-    const response = await Recipe.findOne({nickName:nickName,name:name,_id:_id})
-    return response ? {success:false,message:"es la misma receta"}:{success:false,message:"la receta ya existe."};
-  }catch(error){
-    return {success:false,message:error.message}
+const existNameForUpdate = async (_id, name, nickName) => {
+  try {
+    // Verificamos si ya existe OTRA receta del mismo usuario con ese nombre
+    const existingRecipe = await Recipe.findOne({
+      name,
+      nickName,
+      _id: { $ne: _id }, // otra receta distinta
+    });
+
+    if (existingRecipe) {
+      return {
+        success: true,
+        message: "Ya existe otra receta con ese nombre para este usuario.",
+      };
+    }
+
+    return {
+      success: false,
+      message: "Nombre válido o igual al actual, sin conflictos.",
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: error.message,
+    };
   }
 };
        
