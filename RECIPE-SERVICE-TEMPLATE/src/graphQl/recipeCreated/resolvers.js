@@ -263,9 +263,9 @@ const resolvers = {
       loadRecipe: async (_, { recipe,option},context) => {
         const {informationToken} = context;
         const newRecipe = {
-              _id:recipe._id,
               nickName:informationToken.nickName,
               name: recipe.name,
+              image:recipe.image,
               description: recipe.description,
               ingredients: recipe.ingredients,
               steps: recipe.steps,
@@ -300,6 +300,7 @@ const resolvers = {
                 _id:recipe._id,
                 nickName:informationToken.nickName,
                 name: recipe.name,
+                image:recipe.image,
                 description: recipe.description,
                 ingredients: recipe.ingredients,
                 steps: recipe.steps,
