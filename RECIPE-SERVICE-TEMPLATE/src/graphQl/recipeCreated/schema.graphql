@@ -111,7 +111,6 @@ input stepInput {
 input recipeInput {
   _id:String
   name:String!
-  nickName:String!
   image:String!
   description: String!
   ingredients: [ingredientItemInput]!

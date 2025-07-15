@@ -260,18 +260,32 @@ const resolvers = {
     },
   },    
   Mutation:{
-      loadRecipe: async (_, { recipe,option }) => {
+      loadRecipe: async (_, { recipe,option},context) => {
+        const {informationToken} = context;
+        const newRecipe = {
+              _id:recipe._id,
+              nickName:informationToken.nickName,
+              name: recipe.name,
+              description: recipe.description,
+              ingredients: recipe.ingredients,
+              steps: recipe.steps,
+              typeOfDish: recipe.typeOfDish,
+              difficulty: recipe.difficulty,
+              typeOfDiet: recipe.typeOfDiet,
+              portions:recipe.portions,
+              time:recipe.time
+            };
         try{
           if(!option){
             return {success:false,message:"existe la receta pero no se recibio una opcion."}
           }else if (option == "REPLACE"){
-            const response = await service.replaceRecipe(recipe);
+            const response = await service.replaceRecipe(newRecipe);
             return response;
           }else if(option == "UPDATE"){
-            const response = await service.updateLoadRecipe(recipe);
+            const response = await service.updateLoadRecipe(newRecipe);
             return response;
           }else{
-          const response = await service.createRecipe(recipe);
+          const response = await service.createRecipe(newRecipe);
           return response;
           }
       }catch(error){
