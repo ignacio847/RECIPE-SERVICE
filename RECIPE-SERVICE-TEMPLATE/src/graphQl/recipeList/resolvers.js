@@ -72,7 +72,8 @@ const resolvers = {
                 typeOfDish:recipe.typeOfDish,
                 difficulty:recipe.difficulty,
                 typeOfDiet:recipe.typeOfDiet,
-                time:recipe.time
+                time:recipe.time,
+                numberOfStart:recipe.numberOfStart
             };
     
             const response = await service.addRecipeToList(newRecipe);
